@@ -11,7 +11,6 @@ readme = open('README.md').read()
 VERSION = '0.0.31'
 
 requirements = [
-    'torch',
 ]
 
 # import subprocess

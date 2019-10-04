@@ -54,7 +54,7 @@ def profile(model, inputs, custom_ops=None, verbose=True):
         custom_ops = {}
 
     def add_hooks(m):
-        if len(list(m.children())) > 0:
+        if len(list(m.children())) > 0 and type(m) not in custom_ops:
             return
 
         if hasattr(m, "total_ops") or hasattr(m, "total_params"):
@@ -94,7 +94,7 @@ def profile(model, inputs, custom_ops=None, verbose=True):
     total_ops = 0
     total_params = 0
     for m in model.modules():
-        if len(list(m.children())) > 0:  # skip for non-leaf module
+        if len(list(m.children())) > 0 and type(m) not in custom_ops:
             continue
         total_ops += m.total_ops
         total_params += m.total_params
@@ -109,7 +109,7 @@ def profile(model, inputs, custom_ops=None, verbose=True):
 
     # remove temporal buffers
     for n, m in model.named_modules():
-        if len(list(m.children())) > 0:
+        if len(list(m.children())) > 0 and type(m) not in custom_ops:
             continue
         if "total_ops" in m._buffers:
             m._buffers.pop("total_ops")
