@@ -2,50 +2,76 @@ import logging
 
 import torch
 import torch.nn as nn
-from torch.nn.modules.conv import _ConvNd
+if torch.__version__ == 'parrots':
+    from parrots.nn.modules.conv import _ConvNd
+else:
+    from torch.nn.modules.conv import _ConvNd
 
 from .count_hooks import *
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-register_hooks = {
-    nn.Conv1d: count_convNd,
-    nn.Conv2d: count_convNd,
-    nn.Conv3d: count_convNd,
-    nn.ConvTranspose1d: count_convNd,
-    nn.ConvTranspose2d: count_convNd,
-    nn.ConvTranspose3d: count_convNd,
+if torch.__version__ == 'parrots':
+    register_hooks = {
+        nn.Conv2d: count_convNd,
+        nn.ConvTranspose2d: count_convNd,
 
-    nn.BatchNorm1d: count_bn,
-    nn.BatchNorm2d: count_bn,
-    nn.BatchNorm3d: count_bn,
+        nn.BatchNorm2d: count_bn,
 
-    nn.ReLU: zero_ops,
-    nn.ReLU6: zero_ops,
-    nn.LeakyReLU: count_relu,
+        nn.ReLU: zero_ops,
+        nn.ReLU6: zero_ops,
+        nn.LeakyReLU: count_relu,
 
-    nn.MaxPool1d: zero_ops,
-    nn.MaxPool2d: zero_ops,
-    nn.MaxPool3d: zero_ops,
-    nn.AdaptiveMaxPool1d: zero_ops,
-    nn.AdaptiveMaxPool2d: zero_ops,
-    nn.AdaptiveMaxPool3d: zero_ops,
+        nn.MaxPool2d: zero_ops,
+        nn.AdaptiveMaxPool2d: zero_ops,
 
-    nn.AvgPool1d: count_avgpool,
-    nn.AvgPool2d: count_avgpool,
-    nn.AvgPool3d: count_avgpool,
-    nn.AdaptiveAvgPool1d: count_adap_avgpool,
-    nn.AdaptiveAvgPool2d: count_adap_avgpool,
-    nn.AdaptiveAvgPool3d: count_adap_avgpool,
+        nn.AvgPool2d: count_avgpool,
+        nn.AdaptiveAvgPool2d: count_adap_avgpool,
 
-    nn.Linear: count_linear,
-    nn.Dropout: zero_ops,
+        nn.Linear: count_linear,
+        nn.Dropout: zero_ops,
 
-    nn.Upsample: count_upsample,
-    nn.UpsamplingBilinear2d: count_upsample,
-    nn.UpsamplingNearest2d: count_upsample
-}
+        nn.Upsample: count_upsample,
+    }
+else:
+    register_hooks = {
+        nn.Conv1d: count_convNd,
+        nn.Conv2d: count_convNd,
+        nn.Conv3d: count_convNd,
+        nn.ConvTranspose1d: count_convNd,
+        nn.ConvTranspose2d: count_convNd,
+        nn.ConvTranspose3d: count_convNd,
+
+        nn.BatchNorm1d: count_bn,
+        nn.BatchNorm2d: count_bn,
+        nn.BatchNorm3d: count_bn,
+
+        nn.ReLU: zero_ops,
+        nn.ReLU6: zero_ops,
+        nn.LeakyReLU: count_relu,
+
+        nn.MaxPool1d: zero_ops,
+        nn.MaxPool2d: zero_ops,
+        nn.MaxPool3d: zero_ops,
+        nn.AdaptiveMaxPool1d: zero_ops,
+        nn.AdaptiveMaxPool2d: zero_ops,
+        nn.AdaptiveMaxPool3d: zero_ops,
+
+        nn.AvgPool1d: count_avgpool,
+        nn.AvgPool2d: count_avgpool,
+        nn.AvgPool3d: count_avgpool,
+        nn.AdaptiveAvgPool1d: count_adap_avgpool,
+        nn.AdaptiveAvgPool2d: count_adap_avgpool,
+        nn.AdaptiveAvgPool3d: count_adap_avgpool,
+
+        nn.Linear: count_linear,
+        nn.Dropout: zero_ops,
+
+        nn.Upsample: count_upsample,
+        nn.UpsamplingBilinear2d: count_upsample,
+        nn.UpsamplingNearest2d: count_upsample
+    }
 
 
 def profile(model, inputs, custom_ops=None, verbose=True):
