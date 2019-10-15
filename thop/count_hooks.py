@@ -11,7 +11,7 @@ multiply_adds = 1
 
 
 def zero_ops(m, x, y):
-    m.total_ops += torch.Tensor([int(0)])
+    m.total_ops += torch.LongTensor([int(0)])
 
 
 def count_convNd(m, x, y):
@@ -23,7 +23,7 @@ def count_convNd(m, x, y):
     # N x Cout x H x W x  (Cin x Kw x Kh + bias)
     total_ops = y.nelement() * (m.in_channels // m.groups * kernel_ops + bias_ops)
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 
 def count_convNd_ver2(m, x, y):
@@ -37,7 +37,7 @@ def count_convNd_ver2(m, x, y):
         # Cout x 1
         kernel_ops += + m.bias.nelement()
     # x N x H x W x Cout x (Cin x Kw x Kh + bias)
-    m.total_ops += torch.Tensor([int(output_size * kernel_ops)])
+    m.total_ops += torch.LongTensor([int(output_size * kernel_ops)])
 
 
 def count_bn(m, x, y):
@@ -47,7 +47,7 @@ def count_bn(m, x, y):
     # subtract, divide, gamma, beta
     total_ops = 4 * nelements
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 
 def count_relu(m, x, y):
@@ -55,7 +55,7 @@ def count_relu(m, x, y):
 
     nelements = x.numel()
 
-    m.total_ops += torch.Tensor([int(nelements)])
+    m.total_ops += torch.LongTensor([int(nelements)])
 
 
 def count_softmax(m, x, y):
@@ -68,7 +68,7 @@ def count_softmax(m, x, y):
     total_div = nfeatures
     total_ops = batch_size * (total_exp + total_add + total_div)
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 
 def count_avgpool(m, x, y):
@@ -78,7 +78,7 @@ def count_avgpool(m, x, y):
     num_elements = y.numel()
     total_ops = kernel_ops * num_elements
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 
 def count_adap_avgpool(m, x, y):
@@ -89,7 +89,7 @@ def count_adap_avgpool(m, x, y):
     num_elements = y.numel()
     total_ops = kernel_ops * num_elements
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 # TODO: verify the accuracy
 def count_upsample(m, x, y):
@@ -117,7 +117,7 @@ def count_upsample(m, x, y):
         # can viewed as 2 bilinear + 1 linear
         total_ops = y.nelement() * (13 * 2 + 5)
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])
 
 
 def count_linear(m, x, y):
@@ -127,4 +127,4 @@ def count_linear(m, x, y):
     num_elements = y.numel()
     total_ops = (total_mul + total_add) * num_elements
 
-    m.total_ops += torch.Tensor([int(total_ops)])
+    m.total_ops += torch.LongTensor([int(total_ops)])

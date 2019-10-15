@@ -87,11 +87,11 @@ def profile(model, inputs, custom_ops=None, verbose=True):
             logger.warning("Either .total_ops or .total_params is already defined in %s."
                            "Be careful, it might change your code's behavior." % str(m))
 
-        m.register_buffer('total_ops', torch.zeros(1))
-        m.register_buffer('total_params', torch.zeros(1))
+        m.register_buffer('total_ops', torch.zeros(1).long())
+        m.register_buffer('total_params', torch.zeros(1).long())
 
         for p in m.parameters():
-            m.total_params += torch.Tensor([p.numel()])
+            m.total_params += torch.LongTensor([p.numel()])
 
         m_type = type(m)
         fn = None
